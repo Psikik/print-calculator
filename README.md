@@ -1,6 +1,6 @@
 # Print Calculator CLI
 
-A command-line tool for calculating the cost of 3D prints with support for G-code analysis, material management, and detailed cost breakdowns.
+A Python command-line tool for calculating the cost of 3D prints with support for G-code analysis, material management, and detailed cost breakdowns.
 
 ## Features
 
@@ -10,18 +10,39 @@ A command-line tool for calculating the cost of 3D prints with support for G-cod
 - 📈 Profit margin calculations
 - 📄 Multiple output formats (table, JSON, CSV, Markdown)
 - 🔧 Interactive mode for easy input
+- ✨ Beautiful terminal output with Rich
+
+## Tech Stack
+
+- **Python 3.8+**
+- **Typer** - Modern CLI framework
+- **Rich** - Beautiful terminal output
+- **Pydantic** - Data validation
 
 ## Quick Start
 
 ```bash
 # Install dependencies
-npm install
+pip install -r requirements.txt
+
+# Or with Poetry
+poetry install
 
 # Run the calculator
-npm start -- gcode model.gcode
+python -m print_calc gcode model.gcode
 
 # Or use manual input
-npm start -- manual --weight 45 --time 3.5 --material-cost 20
+python -m print_calc manual --weight 45 --time 3.5 --material-cost 20
+```
+
+## Installation
+
+```bash
+# Install from PyPI (when published)
+pip install print-calc
+
+# Or use pipx for isolated installation
+pipx install print-calc
 ```
 
 ## Documentation
