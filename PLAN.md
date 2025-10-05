@@ -205,6 +205,7 @@ print-calc gcode model.gcode --invoice --client "John Doe" --output pdf
 
 ### Technology Stack
 - **Language**: Python 3.8+
+- **Package Manager**: uv (fast Python package installer and resolver)
 - **CLI Framework**: Typer (modern, type-hint based CLI) or Click
 - **Output Formatting**: Rich (beautiful terminal output with colors, tables, progress bars)
 - **Interactive Prompts**: questionary or rich.prompt
@@ -213,47 +214,48 @@ print-calc gcode model.gcode --invoice --client "John Doe" --output pdf
 - **Data Validation**: Pydantic (for type safety and validation)
 - **PDF Generation**: ReportLab or weasyprint (optional)
 - **Testing**: pytest + pytest-cov for coverage
-- **Package Management**: Poetry or pip with requirements.txt
 
 ### Project Structure
 ```
 print-calculator/
-├── print_calc/
-│   ├── __init__.py
-│   ├── cli.py                 # Main CLI entry point (Typer app)
-│   ├── commands/
-│   │   ├── __init__.py
-│   │   ├── gcode.py           # G-code calculation command
-│   │   ├── manual.py          # Manual input command
-│   │   ├── interactive.py     # Interactive mode
-│   │   ├── material.py        # Material management
-│   │   ├── printer.py         # Printer management
-│   │   └── config.py          # Configuration management
-│   ├── core/
-│   │   ├── __init__.py
-│   │   ├── calculator.py      # Core calculation logic
-│   │   ├── gcode_parser.py    # G-code parsing
-│   │   ├── config_manager.py  # Config file handling
-│   │   └── models.py          # Pydantic models for data
-│   ├── output/
-│   │   ├── __init__.py
-│   │   ├── formatters.py      # Output formatters
-│   │   └── templates.py       # Invoice/report templates
-│   └── utils/
+├── src/
+│   └── print_calc/
 │       ├── __init__.py
-│       ├── validation.py      # Input validation
-│       └── helpers.py         # Utility functions
-├── config/
-│   ├── materials.json         # Default materials
-│   └── defaults.json          # Default settings
+│       ├── cli.py                 # Main CLI entry point (Typer app)
+│       ├── commands/
+│       │   ├── __init__.py
+│       │   ├── gcode.py           # G-code calculation command
+│       │   ├── manual.py          # Manual input command
+│       │   ├── interactive.py     # Interactive mode
+│       │   ├── material.py        # Material management
+│       │   ├── printer.py         # Printer management
+│       │   └── config.py          # Configuration management
+│       ├── core/
+│       │   ├── __init__.py
+│       │   ├── calculator.py      # Core calculation logic
+│       │   ├── gcode_parser.py    # G-code parsing
+│       │   ├── config_manager.py  # Config file handling
+│       │   └── models.py          # Pydantic models for data
+│       ├── output/
+│       │   ├── __init__.py
+│       │   ├── formatters.py      # Output formatters
+│       │   └── templates.py       # Invoice/report templates
+│       └── utils/
+│           ├── __init__.py
+│           ├── validation.py      # Input validation
+│           └── helpers.py         # Utility functions
 ├── tests/
 │   ├── __init__.py
 │   ├── test_calculator.py
 │   ├── test_gcode_parser.py
 │   ├── test_commands.py
-│   └── conftest.py            # pytest fixtures
-├── pyproject.toml             # Poetry config (or setup.py)
-├── requirements.txt           # Dependencies
+│   └── conftest.py                # pytest fixtures
+├── config/
+│   ├── materials.json             # Default materials
+│   └── defaults.json              # Default settings
+├── pyproject.toml                 # Project config with uv
+├── uv.lock                        # Lockfile for dependencies
+├── .python-version                # Python version for uv
 ├── README.md
 └── PLAN.md
 ```
@@ -483,29 +485,39 @@ class GCodeParser:
 
 ### PyPI Package
 ```bash
-# Install globally
+# Install with uv (recommended)
+uv pip install print-calc
+
+# Or use traditional pip
 pip install print-calc
 
-# Or use with pipx (recommended for CLI tools)
+# Install with pipx for isolated CLI tools
 pipx install print-calc
 
-# Run directly with pipx
-pipx run print-calc gcode model.gcode
+# Development installation with uv
+uv pip install -e .
 
-# Development installation
-pip install -e .
+# Run directly without installation
+uvx print-calc gcode model.gcode
 ```
 
-### Poetry Installation (Development)
+### uv Project Setup (Development)
 ```bash
-# Install dependencies
-poetry install
+# Create new project with uv
+uv init print-calculator
+cd print-calculator
+
+# Add dependencies
+uv add typer rich pydantic questionary pyyaml
+
+# Add dev dependencies
+uv add --dev pytest pytest-cov black ruff mypy
 
 # Run the CLI
-poetry run print-calc gcode model.gcode
+uv run print-calc gcode model.gcode
 
-# Build package
-poetry build
+# Run tests
+uv run pytest
 ```
 
 ### Binary Distribution
@@ -538,48 +550,77 @@ poetry build
 
 ### Quick Start Commands
 ```bash
-# 1. Initialize Python project with Poetry
-poetry init --name print-calc --dependency typer --dependency rich
+# 1. Initialize project with uv
+uv init print-calculator
+cd print-calculator
 
-# Or with pip
-mkdir print_calc
-touch print_calc/__init__.py print_calc/cli.py
+# 2. Add dependencies
+uv add typer rich pydantic questionary pyyaml
+uv add --dev pytest pytest-cov black ruff mypy
 
-# 2. Install dependencies
-poetry add typer rich pydantic
-poetry add --group dev pytest pytest-cov black ruff
+# 3. Create package structure
+mkdir -p src/print_calc/{commands,core,output,utils}
+touch src/print_calc/__init__.py
+touch src/print_calc/cli.py
 
-# Or with pip
-pip install typer rich pydantic pytest black ruff
-
-# 3. Create basic CLI structure
-touch print_calc/cli.py
-
-# 4. Set up entry point in pyproject.toml
-# [tool.poetry.scripts]
+# 4. Configure pyproject.toml with CLI entry point
+# [project.scripts]
 # print-calc = "print_calc.cli:app"
 
 # 5. Start development
-poetry install
-poetry run print-calc --help
+uv run print-calc --help
+
+# 6. Run tests
+uv run pytest
+
+# 7. Format and lint
+uv run black src/
+uv run ruff check src/
 ```
 
-### Essential Python Dependencies
+### pyproject.toml Configuration
 ```toml
-[tool.poetry.dependencies]
-python = "^3.8"
-typer = "^0.9.0"           # CLI framework
-rich = "^13.0.0"           # Beautiful terminal output
-pydantic = "^2.0.0"        # Data validation
-questionary = "^2.0.0"     # Interactive prompts
-pyyaml = "^6.0.0"          # YAML config support
+[project]
+name = "print-calc"
+version = "0.1.0"
+description = "3D Print Cost Calculator CLI"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "pydantic>=2.0.0",
+    "questionary>=2.0.0",
+    "pyyaml>=6.0.0",
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.0.0"
-pytest-cov = "^4.0.0"
-black = "^23.0.0"          # Code formatter
-ruff = "^0.1.0"            # Linter
-mypy = "^1.0.0"            # Type checker
+[project.scripts]
+print-calc = "print_calc.cli:app"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py38"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
 ```
 
 ### First Milestone
@@ -592,7 +633,7 @@ Build a working manual calculator that:
 
 This serves as the foundation for all other features.
 
-### Example CLI Entry Point (cli.py)
+### Example CLI Entry Point (src/print_calc/cli.py)
 ```python
 import typer
 from rich.console import Console
@@ -631,4 +672,34 @@ def manual(
 
 if __name__ == "__main__":
     app()
+```
+
+### Development Workflow with uv
+```bash
+# Sync dependencies
+uv sync
+
+# Add a new dependency
+uv add requests
+
+# Run the application
+uv run print-calc manual -w 45 -t 3.5
+
+# Run tests with coverage
+uv run pytest --cov=print_calc
+
+# Format code
+uv run black src/ tests/
+
+# Lint code
+uv run ruff check src/ tests/
+
+# Type check
+uv run mypy src/
+
+# Build package
+uv build
+
+# Publish to PyPI (when ready)
+uv publish
 ```

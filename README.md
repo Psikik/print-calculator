@@ -15,6 +15,7 @@ A Python command-line tool for calculating the cost of 3D prints with support fo
 ## Tech Stack
 
 - **Python 3.8+**
+- **uv** - Fast Python package manager
 - **Typer** - Modern CLI framework
 - **Rich** - Beautiful terminal output
 - **Pydantic** - Data validation
@@ -22,27 +23,51 @@ A Python command-line tool for calculating the cost of 3D prints with support fo
 ## Quick Start
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Initialize project with uv
+uv init print-calculator
+cd print-calculator
 
-# Or with Poetry
-poetry install
+# Add dependencies
+uv add typer rich pydantic questionary pyyaml
+uv add --dev pytest pytest-cov black ruff mypy
 
-# Run the calculator
-python -m print_calc gcode model.gcode
+# Run the calculator (after implementation)
+uv run print-calc gcode model.gcode
 
 # Or use manual input
-python -m print_calc manual --weight 45 --time 3.5 --material-cost 20
+uv run print-calc manual --weight 45 --time 3.5 --material-cost 20
 ```
 
 ## Installation
 
 ```bash
-# Install from PyPI (when published)
+# Install from PyPI with uv (when published)
+uv pip install print-calc
+
+# Or use traditional pip
 pip install print-calc
 
 # Or use pipx for isolated installation
 pipx install print-calc
+
+# Run without installation using uvx
+uvx print-calc gcode model.gcode
+```
+
+## Development
+
+```bash
+# Install in development mode
+uv pip install -e .
+
+# Run tests
+uv run pytest
+
+# Format code
+uv run black src/
+
+# Lint code
+uv run ruff check src/
 ```
 
 ## Documentation
