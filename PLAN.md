@@ -438,7 +438,7 @@ class GCodeParser:
 ## Development Roadmap
 
 ### Phase 1: MVP (Weeks 1-2)
-- [ ] Project setup with Poetry/pip (Python 3.8+)
+- [ ] Project setup with uv (Python 3.8+)
 - [ ] Basic CLI structure with Typer
 - [ ] Manual calculation command
 - [ ] Rich terminal output with tables
@@ -477,7 +477,7 @@ class GCodeParser:
 - [ ] Comprehensive documentation
 - [ ] More unit tests (>80% coverage)
 - [ ] Integration tests
-- [ ] Package for npm/pip
+- [ ] Package for PyPI with uv
 - [ ] CI/CD setup
 - [ ] Version 1.0 release
 
@@ -487,9 +487,6 @@ class GCodeParser:
 ```bash
 # Install with uv (recommended)
 uv pip install print-calc
-
-# Or use traditional pip
-pip install print-calc
 
 # Install with pipx for isolated CLI tools
 pipx install print-calc
